@@ -52,6 +52,8 @@ using std::memcpy;
 #define PASS 0
 #define FAIL 1
 
+
+
 uint32_t Example_Result = FAIL;
 uint32_t Example_PassCount = 0;
 uint32_t Example_Fail = 0;
@@ -257,6 +259,15 @@ void Device_initGPIO(void)
     // Enable GPIO Pullups
     //
     Device_enableUnbondedGPIOPullups();
+
+    // test thoi gian thuc thi
+    //
+    // Enable a GPIO output on GPIO6, set it high
+    //
+    GPIO_setPadConfig(35, GPIO_PIN_TYPE_PULLUP);     // Enable pullup on GPIO6
+    GPIO_writePin(35, 1);                            // Load output latch
+    GPIO_setPinConfig(GPIO_35_GPIO35);                // GPIO6 = GPIO6
+    GPIO_setDirectionMode(35, GPIO_DIR_MODE_OUT);    // GPIO6 = output
 }
 
 //*****************************************************************************

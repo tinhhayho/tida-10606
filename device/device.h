@@ -182,6 +182,7 @@ a single CPU should be defined."
 // Defines, Globals, and Header Includes related to Flash Support
 //
 //*****************************************************************************
+
 #ifdef _FLASH
 #include <stddef.h>
 

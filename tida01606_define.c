@@ -379,6 +379,15 @@ void tida01606_setupTINV6EPWM(uint16_t pwm_period_ticks,
     EPWM_disablePhaseShiftLoad(TINV_INV_PWM_Q1A_BASE);
     EPWM_setSyncOutPulseMode(TINV_INV_PWM_Q1A_BASE, EPWM_SYNC_OUT_PULSE_ON_COUNTER_ZERO);
 
+    //
+    // Interrupt where we will change the Compare Values
+    // Select INT on Time base counter zero event,
+    // Enable INT, generate INT on 1rd event
+    //
+    EPWM_setInterruptSource(TINV_INV_PWM_Q1A_BASE, EPWM_INT_TBCTR_ZERO);
+    EPWM_enableInterrupt(TINV_INV_PWM_Q1A_BASE);
+    EPWM_setInterruptEventCount(TINV_INV_PWM_Q1A_BASE, 1U);
+
     EPWM_enablePhaseShiftLoad(TINV_INV_PWM_Q2A_BASE);
     EPWM_setSyncOutPulseMode(TINV_INV_PWM_Q2A_BASE, EPWM_SYNC_OUT_PULSE_ON_SOFTWARE);
     EPWM_setPhaseShift(TINV_INV_PWM_Q2A_BASE, 2);
