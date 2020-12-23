@@ -8,6 +8,8 @@
 
 #include "svm_gen.h"
 
+
+
 int16_t svm_gen(INPUT_SVM *input,
                  SECTOR_SECLECT* csector,
                  TIME_VECTOR *time_vector,
@@ -16,13 +18,13 @@ int16_t svm_gen(INPUT_SVM *input,
 {
     // ham chon sector
     int i = Seclect_sector_subsector(input, csector);
-    if ( i < 0) return -1;
+    if ( i < 0) __asm ("      ESTOP0");
     // ham tinh toan ta tb tc
     i = Calculate_time_vector( input, time_vector, csector);
-    if ( i < 0) return -1;
+    if ( i < 0) __asm ("      ESTOP0");
     // ham tinh toan thoi gian out
     i = Calculate_time_out(csector, time_vector, time_out);
-    if ( i < 0) return -1;
+    if ( i < 0) __asm ("      ESTOP0");
     // nam thoi gian cho thanh ghi
     Assign_ePWM_counter(time_out, epwm_counter);
     return 1;
@@ -34,7 +36,7 @@ int16_t Seclect_sector_subsector(INPUT_SVM *input, SECTOR_SECLECT* csector)
     // tinh toan x y z de chonj sector
     float x = input->ub;
     float y = 0.8660254f*input->ua - 0.5f*input->ub;
-    float z =-0.8660254f*input->ua - 0.5f*input->ua;
+    float z =-0.8660254f*input->ua - 0.5f*input->ub;
     // xac dinh sector
     int sector = 0;
     if(x>=0)
@@ -75,7 +77,7 @@ int16_t Seclect_sector_subsector(INPUT_SVM *input, SECTOR_SECLECT* csector)
     default: uac = 0;ubc = 0;
     break;
     }
-
+    if( (uac == 0)&&(ubc == 0)) __asm ("      ESTOP0");
     // tinh toan l1 l2 l3 cac duong phan chia mat phang
 
     float l1 = ubc - 1.7320508f*uac + input->udc;
@@ -341,6 +343,7 @@ int16_t Calculate_time_out(SECTOR_SECLECT *csector,
             time_out->t4out = t3;
             time_out->t5out = t5;
             time_out->t6out = t2;
+            break;
         default:
             time_out->t1out = -1;
             time_out->t2out = -1;
@@ -407,6 +410,7 @@ int16_t Calculate_time_out(SECTOR_SECLECT *csector,
             time_out->t4out = t4;
             time_out->t5out = t5;
             time_out->t6out = t2;
+            break;
         default:
             time_out->t1out = -1;
             time_out->t2out = -1;
@@ -467,6 +471,7 @@ int16_t Calculate_time_out(SECTOR_SECLECT *csector,
             time_out->t4out = 0.25f*time->tc + 0.5f*time->tb + 0.5f*time->ta;
             time_out->t5out = 0.25f*time->tc + 0.5f*time->tb;
             time_out->t6out = 0;
+            break;
         default:
             time_out->t1out = -1;
             time_out->t2out = -1;
@@ -512,7 +517,7 @@ int16_t Calculate_time_out(SECTOR_SECLECT *csector,
             time_out->t3out = 0.5;
             time_out->t4out = 0.25f*time->ta + 0.5f*time->tc;
             time_out->t5out = 0.25f*time->ta;
-            time_out->t5out = 0;
+            time_out->t6out = 0;
             break;
         case 6:
             time_out->t1out = 0.25f*time->tc + 0.25f*time->tb;
@@ -520,7 +525,7 @@ int16_t Calculate_time_out(SECTOR_SECLECT *csector,
             time_out->t3out = 0.5;
             time_out->t4out = 0.25f*time->tc + 0.5f*time->tb + 0.5f*time->ta;
             time_out->t5out = 0.25f*time->tc;
-            time_out->t5out = 0;
+            time_out->t6out = 0;
             break;
         case 2:
             time_out->t1out = 0.25*time->ta;
@@ -529,6 +534,7 @@ int16_t Calculate_time_out(SECTOR_SECLECT *csector,
             time_out->t4out = 0.25f*time->ta + 0.5f*time->tc + 0.5f*time->tb;
             time_out->t5out = 0.5;
             time_out->t6out = 0.25f*time->ta + 0.5f*time->tc;
+            break;
         default:
             time_out->t1out = -1;
             time_out->t2out = -1;
@@ -561,31 +567,32 @@ int16_t Calculate_time_out(SECTOR_SECLECT *csector,
 
 
 uint16_t Assign_ePWM_counter(TIME_VECTOR_OUT *time_out, EPWM_COUNTER *counter){
-    counter->epwm1a = (uint16_t)(time_out->t1out*TINV_INV_PWM_PERIOD/2);
-    counter->epwm2a = (uint16_t)(time_out->t2out*TINV_INV_PWM_PERIOD/2);
-    counter->epwm1b = (uint16_t)(time_out->t3out*TINV_INV_PWM_PERIOD/2);
-    counter->epwm2b = (uint16_t)(time_out->t4out*TINV_INV_PWM_PERIOD/2);
-    counter->epwm1c = (uint16_t)(time_out->t5out*TINV_INV_PWM_PERIOD/2);
-    counter->epwm2c = (uint16_t)(time_out->t6out*TINV_INV_PWM_PERIOD/2);
+    counter->epwm1a = (uint16_t)(time_out->t1out*TINV_INV_PWM_PERIOD);
+    counter->epwm2a = (uint16_t)(time_out->t2out*TINV_INV_PWM_PERIOD);
+    counter->epwm1b = (uint16_t)(time_out->t3out*TINV_INV_PWM_PERIOD);
+    counter->epwm2b = (uint16_t)(time_out->t4out*TINV_INV_PWM_PERIOD);
+    counter->epwm1c = (uint16_t)(time_out->t5out*TINV_INV_PWM_PERIOD);
+    counter->epwm2c = (uint16_t)(time_out->t6out*TINV_INV_PWM_PERIOD);
 
     // set epwm counter real
-    uint16_t i = EPWM_getCounterCompareValue(TINV_INV_PWM_Q1A_BASE, EPWM_COUNTER_COMPARE_A );
+
     EPWM_setCounterCompareValue(TINV_INV_PWM_Q1A_BASE, EPWM_COUNTER_COMPARE_A, counter->epwm1a);
 
-     i = EPWM_getCounterCompareValue(TINV_INV_PWM_Q2A_BASE, EPWM_COUNTER_COMPARE_A );
+
     EPWM_setCounterCompareValue(TINV_INV_PWM_Q2A_BASE, EPWM_COUNTER_COMPARE_A, counter->epwm2a);
 
-     i = EPWM_getCounterCompareValue(TINV_INV_PWM_Q2A_BASE, EPWM_COUNTER_COMPARE_A );
-    EPWM_setCounterCompareValue(TINV_INV_PWM_Q2A_BASE, EPWM_COUNTER_COMPARE_A, counter->epwm1b);
 
-     i = EPWM_getCounterCompareValue(TINV_INV_PWM_Q2A_BASE, EPWM_COUNTER_COMPARE_A );
-    EPWM_setCounterCompareValue(TINV_INV_PWM_Q2A_BASE, EPWM_COUNTER_COMPARE_A, counter->epwm2b);
+    EPWM_setCounterCompareValue(TINV_INV_PWM_Q1B_BASE, EPWM_COUNTER_COMPARE_A, counter->epwm1b);
 
-     i = EPWM_getCounterCompareValue(TINV_INV_PWM_Q2A_BASE, EPWM_COUNTER_COMPARE_A );
-    EPWM_setCounterCompareValue(TINV_INV_PWM_Q2A_BASE, EPWM_COUNTER_COMPARE_A, counter->epwm1c);
 
-     i = EPWM_getCounterCompareValue(TINV_INV_PWM_Q2A_BASE, EPWM_COUNTER_COMPARE_A );
-    EPWM_setCounterCompareValue(TINV_INV_PWM_Q2A_BASE, EPWM_COUNTER_COMPARE_A, counter->epwm2c);
+    EPWM_setCounterCompareValue(TINV_INV_PWM_Q2B_BASE, EPWM_COUNTER_COMPARE_A, counter->epwm2b);
+
+
+    EPWM_setCounterCompareValue(TINV_INV_PWM_Q1C_BASE, EPWM_COUNTER_COMPARE_A, counter->epwm1c);
+
+
+    EPWM_setCounterCompareValue(TINV_INV_PWM_Q2C_BASE, EPWM_COUNTER_COMPARE_A, counter->epwm2c);
+
     return 1;
 }
 

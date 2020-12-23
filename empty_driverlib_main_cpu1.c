@@ -5,7 +5,7 @@
 #define _main_
 #include "svm_gen.h"
 
-
+int duty;
 
 #define freq_svm 20000
 #define freq_voltage 50
@@ -86,7 +86,7 @@ void main(void)
 
     counter1 = 100;
     counter2 = 0;
-    pinput->udc = 115;
+    pinput->udc = 50/1.732;// udc chuan hoa
 
     SysCtl_disablePeripheral(SYSCTL_PERIPH_CLK_TBCLKSYNC);
 
@@ -131,8 +131,10 @@ void main(void)
 __interrupt void epwmQ1ISR(void){
     GPIO_togglePin(35);
 
-    pinput->ua = 100*sin_tab[(int)(counter1*5.12f)];
-    pinput->ub = 100*sin_tab[(int)(counter2*5.12f)];
+    pinput->ua = 25*sin_tab[(int)(counter1*5.12f)];
+    pinput->ub = 25*sin_tab[(int)(counter2*5.12f)];
+
+//    EPWM_setCounterCompareValue(TINV_INV_PWM_Q1A_BASE, EPWM_COUNTER_COMPARE_A, duty);
 
     svm_gen( pinput, psector, ptime_v, ptime_out, pepwm_count);
     counter1++;

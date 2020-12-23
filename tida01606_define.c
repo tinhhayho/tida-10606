@@ -435,16 +435,16 @@ void tida01606_setupPhasePWM(uint32_t base1A,
     //
     // Counter Compare Submodule Registers
     //
-    EPWM_setCounterCompareValue(base1A, EPWM_COUNTER_COMPARE_A, 1000);
+    EPWM_setCounterCompareValue(base1A, EPWM_COUNTER_COMPARE_A, 200);
     EPWM_setCounterCompareShadowLoadMode(base1A, EPWM_COUNTER_COMPARE_A,
                                          EPWM_COMP_LOAD_ON_CNTR_ZERO_PERIOD);
 
     //
     // Action Qualifier SubModule Registers
     //
-    EPWM_setActionQualifierAction(base1A, EPWM_AQ_OUTPUT_A, EPWM_AQ_OUTPUT_HIGH,
-                                  EPWM_AQ_OUTPUT_ON_TIMEBASE_DOWN_CMPA);
     EPWM_setActionQualifierAction(base1A, EPWM_AQ_OUTPUT_A, EPWM_AQ_OUTPUT_LOW,
+                                  EPWM_AQ_OUTPUT_ON_TIMEBASE_DOWN_CMPA);
+    EPWM_setActionQualifierAction(base1A, EPWM_AQ_OUTPUT_A, EPWM_AQ_OUTPUT_HIGH,
                                   EPWM_AQ_OUTPUT_ON_TIMEBASE_UP_CMPA);
 
     EPWM_setActionQualifierAction(base1A, EPWM_AQ_OUTPUT_B, EPWM_AQ_OUTPUT_HIGH,
@@ -466,7 +466,7 @@ void tida01606_setupPhasePWM(uint32_t base1A,
     //
     // Counter Compare Submodule Registers
     //
-    EPWM_setCounterCompareValue(base2A, EPWM_COUNTER_COMPARE_A, 1000);
+    EPWM_setCounterCompareValue(base2A, EPWM_COUNTER_COMPARE_A, 450);
     EPWM_setCounterCompareShadowLoadMode(base2A, EPWM_COUNTER_COMPARE_A,
                                          EPWM_COMP_LOAD_ON_CNTR_ZERO_PERIOD);
 
@@ -482,7 +482,7 @@ void tida01606_setupPhasePWM(uint32_t base1A,
                                   EPWM_AQ_OUTPUT_ON_TIMEBASE_DOWN_CMPA);
     EPWM_setActionQualifierAction(base2A, EPWM_AQ_OUTPUT_B, EPWM_AQ_OUTPUT_HIGH,
                                   EPWM_AQ_OUTPUT_ON_TIMEBASE_UP_CMPA);
-
+    // set deadband
     EPWM_setActionQualifierContSWForceShadowMode(base1A,
                                      EPWM_AQ_SW_SH_LOAD_ON_CNTR_ZERO_PERIOD);
     EPWM_setActionQualifierContSWForceShadowMode(base2A,
@@ -515,12 +515,14 @@ void tida01606_setupPhasePWM(uint32_t base1A,
                                   EPWM_DB_POLARITY_ACTIVE_LOW);
     EPWM_setDeadBandDelayPolarity(base1A, EPWM_DB_RED,
                                   EPWM_DB_POLARITY_ACTIVE_HIGH);
-
+    //
     EPWM_setDeadBandCounterClock(base2A, EPWM_DB_COUNTER_CLOCK_FULL_CYCLE);
     EPWM_setRisingEdgeDelayCount(base2A, pwm_dbred_ticks);
     EPWM_setFallingEdgeDelayCount(base2A, pwm_dbfed_ticks);
     EPWM_setDeadBandDelayMode(base2A, EPWM_DB_RED, 1);
     EPWM_setDeadBandDelayMode(base2A, EPWM_DB_FED, 1);
+    EPWM_setDeadBandOutputSwapMode(base2A,EPWM_DB_OUTPUT_A ,1);
+    EPWM_setDeadBandOutputSwapMode(base2A,EPWM_DB_OUTPUT_B ,1);
     EPWM_setRisingEdgeDeadBandDelayInput(base2A, EPWM_DB_INPUT_EPWMA);
     EPWM_setFallingEdgeDeadBandDelayInput(base2A, EPWM_DB_INPUT_EPWMA);
     EPWM_setDeadBandDelayPolarity(base2A, EPWM_DB_FED,

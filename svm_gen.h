@@ -11,6 +11,10 @@
 #define SVM_GEN_H_
 #include "tida01606_define.h"
 
+#define code1
+
+static char sector[20], time_[20], timeout_[20], comp[20];
+
 
 typedef struct {
     float ua;
