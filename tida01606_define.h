@@ -27,7 +27,7 @@ extern "C" {
 #define TINV_CPU_SYS_CLOCK       (200 * 1000000)
 #define TINV_PWMSYSCLOCK_FREQ    (100 * 1000000)
 #define TINV_ECAPSYSCLOCK_FREQ   (200 * 1000000)
-
+// ACQPS = 100ns
 #define TINV_ACQPS_SYS_CLKS     ((float32_t)100.0 * (float32_t)0.000000001 *   \
                                  (float32_t)TINV_CPU_SYS_CLOCK)
 
@@ -87,7 +87,7 @@ extern "C" {
 //
 // Power Stage Related Values determined by physcial design*/
 //
-#define TINV_INV_PWM_SWITCHING_FREQUENCY  ((float32_t)20 * 1000)
+#define TINV_INV_PWM_SWITCHING_FREQUENCY  ((float32_t)500 * 1000)
 #define TINV_LCL_RESONANCE_FREQ           ((float32_t)5.952013574504279)
 #define TINV_INV_DEADBAND_US              ((float32_t)1)
 #define TINV_INV_PWM_PERIOD               (TINV_PWMSYSCLOCK_FREQ) /            \
@@ -498,6 +498,41 @@ void tida01606_setupPhasePWM(uint32_t base1A,
                              uint16_t pwm_period_ticks,
                              uint16_t pwm_dbred_ticks,
                              uint16_t pwm_dbfed_ticks);
+
+void CLA_confiClaMemory(void);
+void CLA_initCpu1Cla1(void);
+void tida_01606_setup_SDFM(uint16_t PWM_ticks,
+                           uint16_t PWM_ticks_in_sdf_osr,
+                           uint16_t SD_clk_ecap_sys_ticks,
+                           uint16_t sdfmosr);
+void tida_01606_setupTrigger(uint32_t base);
+void tida_01606_configurePWMsyncSDFM(uint16_t PWM_ticks,
+                                     uint16_t PWM_ticks_in_sdfm_osr);
+void tida_01606_configurePWM1chUpCnt(uint32_t base1,
+                                     uint16_t period);
+void tida_01606_configuECapforSDFMclk(uint16_t SD_clk_ecap_sys_ticks);
+
+
+extern __interrupt void cla1Isr1(void);
+extern __interrupt void cla1Isr2(void);
+extern __interrupt void cla1Isr3(void);
+extern __interrupt void cla1Isr4(void);
+extern __interrupt void cla1Isr5(void);
+extern __interrupt void cla1Isr6(void);
+extern __interrupt void cla1Isr7(void);
+extern __interrupt void cla1Isr8(void);
+
+extern __interrupt void Cla1Task1 ( void );
+extern __interrupt void Cla1Task2 ( void );
+extern __interrupt void Cla1Task3 ( void );
+extern __interrupt void Cla1Task4 ( void );
+extern __interrupt void Cla1Task5 ( void );
+extern __interrupt void Cla1Task6 ( void );
+extern __interrupt void Cla1Task7 ( void );
+extern __interrupt void Cla1Task8 ( void );
+
+
+
 //
 // USER CODE END (section: User_Section)
 //

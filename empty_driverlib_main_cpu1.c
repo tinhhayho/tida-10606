@@ -4,17 +4,20 @@
 #ifndef _main_
 #define _main_
 #include "svm_gen.h"
+#include "tida_01606_share.h"
 
-int duty;
+
+float biendo, dc;
 
 #define freq_svm 20000
 #define freq_voltage 50
 #define isPWM 1
-#define isADC 0
+#define isADC 1
 #define isRelay 1
 #define isFan 0
 #define isEnPWM 1
 #define phaseRelay 4
+#define ACTIVE_ADC 1
 
 
 //
@@ -22,10 +25,28 @@ int duty;
 //
 
 
+int stt;
 
 int counter1, counter2;
 
 const float sin_tab[2048];
+float adcA1;
+float adcA2;
+float adcA3;
+
+float adcB1;
+float adcB2;
+float adcB3;
+float adcB4;
+
+float adcC1;
+float adcC2;
+float adcC3;
+
+float adcD1;
+float adcD2;
+float adcD3;
+
 
 
 INPUT_SVM input;
@@ -44,17 +65,18 @@ EPWM_COUNTER epwm_counter;
 EPWM_COUNTER *pepwm_count = &epwm_counter;
 
 
-
+// function prototype
+void
+configureDAC(void);
 
 __interrupt void epwmQ1ISR(void);
-/*
-#define ACTIVE_ADC 1
-*/
+
 //
 // Main
 //
 void main(void)
 {
+
     // initialize device clock and peripherals
     Device_init();
     // disable pin lock and enable pull up resistor
@@ -70,6 +92,10 @@ void main(void)
     //
     Interrupt_initVectorTable();
 
+    // configu cla
+//    CLA_confiClaMemory();
+//    CLA_initCpu1Cla1();
+
     Interrupt_register(INT_EPWM1, &epwmQ1ISR);
 
 
@@ -78,15 +104,29 @@ void main(void)
                          isRelay,
                          isFan,
                          isEnPWM);
-
+    tida01606_setupADC();
+    //
+    // Configure the DAC module
+    //
+    configureDAC();
 
 #ifdef ACTIVE_ADC
-    tida01606_setupADC
+
+
+/*    tida_01606_setup_SDFM(TINV_INV_PWM_PERIOD,
+                       TINV_PWM_CLK_IN_SDFM_OSR,
+                       TINV_SD_CLK_COUNT,
+                       TINV_SDFM_OSR);
+                       */
+
 #endif
 
     counter1 = 100;
     counter2 = 0;
-    pinput->udc = 50/1.732;// udc chuan hoa
+    biendo = 25;
+    dc = 60;
+    stt  = 0;
+    pinput->udc = 20/1.732;// udc chuan hoa
 
     SysCtl_disablePeripheral(SYSCTL_PERIPH_CLK_TBCLKSYNC);
 
@@ -117,6 +157,10 @@ void main(void)
     Interrupt_enable(INT_EPWM1);
 
 
+
+    tida_01606_setupTrigger(TINV_INV_PWM_Q1A_BASE);
+
+
     // enable global interupt(intm) and realtime interrupt
     EINT;
     ERTM;
@@ -130,13 +174,62 @@ void main(void)
 
 __interrupt void epwmQ1ISR(void){
     GPIO_togglePin(35);
+    adcA1 = ADC_readResult( ADCARESULT_BASE , ADC_SOC_NUMBER0 );
+    adcA2 = ADC_readResult( ADCARESULT_BASE , ADC_SOC_NUMBER3 );
+    adcA3 = ADC_readResult( ADCARESULT_BASE , ADC_SOC_NUMBER6 );
 
-    pinput->ua = 25*sin_tab[(int)(counter1*5.12f)];
-    pinput->ub = 25*sin_tab[(int)(counter2*5.12f)];
+    adcB1 = ADC_readResult( ADCBRESULT_BASE , ADC_SOC_NUMBER10 );
+    adcB2 = ADC_readResult( ADCBRESULT_BASE , ADC_SOC_NUMBER11 );
+    adcB3 = ADC_readResult( ADCBRESULT_BASE , ADC_SOC_NUMBER12 );
+    adcB4 = ADC_readResult( ADCBRESULT_BASE , ADC_SOC_NUMBER13 );
+
+    adcC1 = ADC_readResult( ADCCRESULT_BASE , ADC_SOC_NUMBER1 );
+    adcC2 = ADC_readResult( ADCCRESULT_BASE , ADC_SOC_NUMBER4 );
+    adcC3 = ADC_readResult( ADCCRESULT_BASE , ADC_SOC_NUMBER7 );
+
+    adcD1 = ADC_readResult( ADCDRESULT_BASE , ADC_SOC_NUMBER2 );
+    adcD2 = ADC_readResult( ADCDRESULT_BASE , ADC_SOC_NUMBER5 );
+    adcD3 = ADC_readResult( ADCDRESULT_BASE , ADC_SOC_NUMBER8 );
+
+    switch (stt){
+    case 1: DAC_setShadowValue(DACA_BASE, adcA1);
+    break;
+    case 2: DAC_setShadowValue(DACA_BASE, adcA2);
+    break;
+    case 3: DAC_setShadowValue(DACA_BASE, adcA3);
+    break;
+    case 4: DAC_setShadowValue(DACA_BASE, adcB1);
+    break;
+    case 5: DAC_setShadowValue(DACA_BASE, adcB2);
+    break;
+    case 6: DAC_setShadowValue(DACA_BASE, adcB3);
+    break;
+    case 7: DAC_setShadowValue(DACA_BASE, adcB4);
+    break;
+    case 8:DAC_setShadowValue(DACA_BASE, adcC1);
+    break;
+    case 9:DAC_setShadowValue(DACA_BASE, adcC2);
+    break;
+    case 10:DAC_setShadowValue(DACA_BASE, adcC3);
+    break;
+    case 11: DAC_setShadowValue(DACA_BASE, adcD1);
+    break;
+    case 12: DAC_setShadowValue(DACA_BASE, adcD2);
+    break;
+    case 13:DAC_setShadowValue(DACA_BASE, adcD3);
+    break;
+    default : DAC_setShadowValue(DACA_BASE, adcA3);
+    break;
+    }
+    DAC_setShadowValue(DACA_BASE, adcA3);
+
+    pinput->udc = dc/1.732;
+    pinput->ua = biendo*sin_tab[(int)(counter1*5.12f)];
+    pinput->ub = biendo*sin_tab[(int)(counter2*5.12f)];
 
 //    EPWM_setCounterCompareValue(TINV_INV_PWM_Q1A_BASE, EPWM_COUNTER_COMPARE_A, duty);
 
-    svm_gen( pinput, psector, ptime_v, ptime_out, pepwm_count);
+//    svm_gen( pinput, psector, ptime_v, ptime_out, pepwm_count);
     counter1++;
     counter2++;
     if((int)(counter1*5.12f) > 2047) counter1 = 0;
@@ -153,6 +246,33 @@ __interrupt void epwmQ1ISR(void){
     //
     Interrupt_clearACKGroup(INTERRUPT_ACK_GROUP3);
 
+}
+
+
+void
+configureDAC(void)
+{
+    //
+    // Set VDAC as the DAC reference voltage.
+    // Edit here to use ADC VREF as the reference voltage.
+    //
+    DAC_setReferenceVoltage(DACA_BASE, DAC_REF_ADC_VREFHI);
+
+    //
+    // Enable the DAC output
+    //
+    DAC_enableOutput(DACA_BASE);
+
+    //
+    // Set the DAC shadow output to 0
+    //
+    DAC_setShadowValue(DACA_BASE, 0);
+    DAC_tuneOffsetTrim(DACA_BASE, 3.255f);
+
+    //
+    // Delay for buffered DAC to power up
+    //
+    DEVICE_DELAY_US(10);
 }
 
 

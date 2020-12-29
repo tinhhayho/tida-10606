@@ -1,0 +1,52 @@
+/*
+ * tida_01606_cla.cla
+ *
+ *  Created on: Dec 26, 2020
+ *      Author: Tinh_deptrai
+ */
+#include "tida_01606_share.h"
+
+
+
+__interrupt void Cla1Task1 ( void )
+{
+
+}
+
+
+__interrupt void Cla1Task2 ( void )
+{
+
+}
+
+__interrupt void Cla1Task3 ( void )
+{
+
+}
+
+__interrupt void Cla1Task4 ( void )
+{
+
+}
+
+__interrupt void Cla1Task5 ( void )
+{
+
+}
+
+__interrupt void Cla1Task6 ( void )
+{
+
+}
+
+__interrupt void Cla1Task7 ( void )
+{
+
+}
+
+__interrupt void Cla1Task8 ( void )
+{
+
+}
+
+

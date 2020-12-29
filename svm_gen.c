@@ -496,7 +496,7 @@ int16_t Calculate_time_out(SECTOR_SECLECT *csector,
             time_out->t6out = 0.25f*time->tc + 0.5f*time->tb + 0.5f*time->ta;
             break;
         case 1:
-            time_out->t1out = 0.5;
+            time_out->t1out = 0.5f;
             time_out->t2out = 0.25f*time->ta + 0.5f*time->tc;
             time_out->t3out = 0.25f*time->ta;
             time_out->t4out = 0;
@@ -520,7 +520,7 @@ int16_t Calculate_time_out(SECTOR_SECLECT *csector,
             time_out->t6out = 0;
             break;
         case 6:
-            time_out->t1out = 0.25f*time->tc + 0.25f*time->tb;
+            time_out->t1out = 0.25f*time->tc + 0.5f*time->tb;
             time_out->t2out = 0;
             time_out->t3out = 0.5;
             time_out->t4out = 0.25f*time->tc + 0.5f*time->tb + 0.5f*time->ta;

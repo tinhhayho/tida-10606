@@ -11,11 +11,15 @@ GEN_CMDS__FLAG :=
 
 ORDERED_OBJS += \
 "./empty_driverlib_main_cpu1.obj" \
+"./interrupt_ISR.obj" \
+"./protection_func.obj" \
 "./svm_gen.obj" \
 "./tida01606_define.obj" \
+"./tida_01606_cla.obj" \
+"./tida_01606_share.obj" \
 "./device/F2837xD_CodeStartBranch.obj" \
 "./device/device.obj" \
-"../2837xD_RAM_lnk_cpu1.cmd" \
+"../2837xD_RAM_CLA_lnk_cpu1.cmd" \
 "C:/ti/c2000/C2000Ware_3_01_00_00/driverlib/f2837xd/driverlib/ccs/Debug/driverlib.lib" \
 $(GEN_CMDS__FLAG) \
 -l"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-c2000_20.2.0.LTS/lib/rts2800_fpu32_eabi.lib" \
@@ -161,8 +165,9 @@ empty_driverlib_project_cpu1.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "empty_driverlib_main_cpu1.obj" "svm_gen.obj" "tida01606_define.obj" "device\F2837xD_CodeStartBranch.obj" "device\device.obj" 
-	-$(RM) "empty_driverlib_main_cpu1.d" "svm_gen.d" "tida01606_define.d" "device\device.d" 
+	-$(RM) "empty_driverlib_main_cpu1.obj" "interrupt_ISR.obj" "protection_func.obj" "svm_gen.obj" "tida01606_define.obj" "tida_01606_cla.obj" "tida_01606_share.obj" "device\F2837xD_CodeStartBranch.obj" "device\device.obj" 
+	-$(RM) "empty_driverlib_main_cpu1.d" "interrupt_ISR.d" "protection_func.d" "svm_gen.d" "tida01606_define.d" "tida_01606_share.d" "device\device.d" 
+	-$(RM) "tida_01606_cla.d" 
 	-$(RM) "device\F2837xD_CodeStartBranch.d" 
 	-@echo 'Finished clean'
 	-@echo ' '

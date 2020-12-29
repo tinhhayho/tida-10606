@@ -84,6 +84,7 @@ empty_driverlib_main_cpu1.obj: C:/ti/c2000/C2000Ware_3_01_00_00/driverlib/f2837x
 empty_driverlib_main_cpu1.obj: C:/ti/c2000/C2000Ware_3_01_00_00/driverlib/f2837xd/driverlib/inc/hw_upp.h
 empty_driverlib_main_cpu1.obj: C:/ti/c2000/C2000Ware_3_01_00_00/driverlib/f2837xd/driverlib/version.h
 empty_driverlib_main_cpu1.obj: C:/Users/Tinh_deptrai/workspace_v10/empty_driverlib_project_cpu1/device/device.h
+empty_driverlib_main_cpu1.obj: ../tida_01606_share.h
 
 ../empty_driverlib_main_cpu1.c: 
 ../svm_gen.h: 
@@ -169,3 +170,4 @@ C:/ti/c2000/C2000Ware_3_01_00_00/driverlib/f2837xd/driverlib/upp.h:
 C:/ti/c2000/C2000Ware_3_01_00_00/driverlib/f2837xd/driverlib/inc/hw_upp.h: 
 C:/ti/c2000/C2000Ware_3_01_00_00/driverlib/f2837xd/driverlib/version.h: 
 C:/Users/Tinh_deptrai/workspace_v10/empty_driverlib_project_cpu1/device/device.h: 
+../tida_01606_share.h: 
